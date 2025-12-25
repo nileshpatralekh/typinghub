@@ -625,9 +625,9 @@
                         el.className = 'word-current';
                         // Check strict prefix match
                         if (typed.length > 0 && !orig.startsWith(typed)) {
-                            // Error: White text on Red background
-                            el.style.backgroundColor = 'red';
-                            el.style.color = 'white';
+                            // Error: Red text on Yellow background
+                            el.style.backgroundColor = 'var(--highlight-yellow)';
+                            el.style.color = 'red';
                         } else {
                             // Correct so far: Black text on Yellow background
                             el.style.backgroundColor = 'var(--highlight-yellow)';
