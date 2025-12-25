@@ -598,17 +598,22 @@
 
                 // Reset
                 el.className = '';
+                el.style.backgroundColor = '';
+                el.style.color = '';
 
                 if (typed === undefined) {
                     // Not reached yet
                     el.className = 'word-pending';
                 } else {
                     if (idx === inputWords.length - 1) {
+                        // Current word being typed
                         el.className = 'word-current';
                         if (!orig.startsWith(typed)) {
-                            el.style.backgroundColor = 'red';
-                            el.style.color = 'white';
+                            // Error in current word: Keep yellow background, make text red
+                            el.style.backgroundColor = 'var(--highlight-yellow)';
+                            el.style.color = 'red';
                         } else {
+                            // Correct so far: Yellow background, black text
                             el.style.backgroundColor = 'var(--highlight-yellow)';
                             el.style.color = 'black';
                         }
@@ -616,10 +621,8 @@
                         // Past word (completed)
                         if (typed === orig) {
                             el.className = 'word-correct';
-                            el.style.backgroundColor = 'transparent';
                         } else {
                             el.className = 'word-wrong';
-                            el.style.backgroundColor = 'transparent';
                         }
                     }
                 }
