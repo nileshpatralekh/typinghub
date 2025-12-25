@@ -616,15 +616,32 @@
                 el.style.backgroundColor = '';
                 el.style.color = '';
 
-            } else {
-                // Correct so far
-                el.style.backgroundColor = 'var(--highlight-yellow)';
-                el.style.color = 'black';
-            }
+                if (typed === undefined) {
+                    // Not reached yet
+                    el.className = 'word-pending';
                 } else {
-            // Cursor not reached yet
-            el.className = 'word-pending';
-        }
+                    if (idx === inputWords.length - 1 && !currentInput.endsWith(' ')) {
+                        // Current word being typed
+                        el.className = 'word-current';
+                        // Check strict prefix match
+                        if (typed.length > 0 && !orig.startsWith(typed)) {
+                            // Error: Red text on Yellow
+                            el.style.backgroundColor = 'var(--highlight-yellow)';
+                            el.style.color = 'red';
+                        } else {
+                            // Correct so far: Black text on Yellow
+                            el.style.backgroundColor = 'var(--highlight-yellow)';
+                            el.style.color = 'black';
+                        }
+                    } else {
+                        // Past word (completed)
+                        if (typed === orig) {
+                            el.className = 'word-correct';
+                        } else {
+                            el.className = 'word-wrong';
+                        }
+                    }
+                }
             });
         }
 
