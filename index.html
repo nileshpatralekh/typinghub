@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSC CGL Typing Practice (Fixed Layout)</title>
+    <title>Typing Practice </title>
     <style>
         /* General Reset */
         :root {
@@ -23,10 +24,12 @@
             background-color: var(--ssc-bg);
             margin: 0;
             padding: 0;
-            height: 100vh; /* Full viewport height */
+            height: 100vh;
+            /* Full viewport height */
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Prevent scrolling of the whole page */
+            overflow: hidden;
+            /* Prevent scrolling of the whole page */
         }
 
         /* Top Header - Fixed Height */
@@ -38,14 +41,21 @@
             justify-content: space-between;
             align-items: center;
             height: 60px;
-            flex-shrink: 0; /* Prevents header from shrinking */
+            flex-shrink: 0;
+            /* Prevents header from shrinking */
         }
 
-        .exam-info { font-weight: bold; }
-        
-        .stats-bar { display: flex; gap: 15px; }
+        .exam-info {
+            font-weight: bold;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 15px;
+        }
+
         .stat-box {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             padding: 5px 10px;
             border-radius: 4px;
             font-size: 14px;
@@ -55,21 +65,25 @@
         .container {
             display: flex;
             flex-direction: column;
-            flex: 1; /* Grow to fill space between header and footer */
+            flex: 1;
+            /* Grow to fill space between header and footer */
             padding: 10px;
             gap: 10px;
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            min-height: 0; /* Crucial for scrolling inside flex items */
+            min-height: 0;
+            /* Crucial for scrolling inside flex items */
         }
 
         /* Input/Output Wrapper */
         .panel-wrapper {
             display: flex;
             flex-direction: column;
-            flex: 1; /* Takes half the container space */
-            min-height: 0; /* Allows children to scroll */
+            flex: 1;
+            /* Takes half the container space */
+            min-height: 0;
+            /* Allows children to scroll */
         }
 
         .box-label {
@@ -81,23 +95,33 @@
         }
 
         /* Text Areas */
-        .text-panel, textarea.input-panel {
+        .text-panel,
+        textarea.input-panel {
             width: 100%;
-            flex: 1; /* Grow to fill the wrapper */
+            flex: 1;
+            /* Grow to fill the wrapper */
             resize: none;
             padding: 15px;
-            font-size: 18px; /* Slightly larger for better readability */
+            font-size: 18px;
+            /* Slightly larger for better readability */
             line-height: 1.6;
             border: 1px solid var(--ssc-border);
             border-radius: 4px;
             font-family: 'Times New Roman', Times, serif;
             background: white;
-            overflow-y: auto; /* Scroll inside the box, not the page */
+            overflow-y: auto;
+            /* Scroll inside the box, not the page */
         }
 
         /* Character Highlighting */
-        span.correct { color: green; }
-        span.incorrect { background-color: var(--error-color); color: white; }
+        span.correct {
+            color: green;
+        }
+
+        span.incorrect {
+            background-color: var(--error-color);
+            color: white;
+        }
 
         /* Bottom Controls - Fixed at bottom */
         .controls {
@@ -105,9 +129,11 @@
             border-top: 1px solid #ccc;
             padding: 15px 20px;
             display: flex;
-            justify-content: flex-end; /* Align buttons to right */
+            justify-content: flex-end;
+            /* Align buttons to right */
             gap: 10px;
-            flex-shrink: 0; /* Prevent controls from shrinking */
+            flex-shrink: 0;
+            /* Prevent controls from shrinking */
             z-index: 10;
         }
 
@@ -120,205 +146,358 @@
             font-size: 14px;
         }
 
-        .btn-start { background-color: #5cb85c; color: white; }
-        .btn-reset { background-color: #d9534f; color: white; }
-        
-        button:hover { opacity: 0.9; }
+        .btn-start {
+            background-color: #5cb85c;
+            color: white;
+        }
+
+        .btn-reset {
+            background-color: #d9534f;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
 
         /* Modal */
         .modal {
             display: none;
             position: fixed;
             z-index: 100;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
             justify-content: center;
             align-items: center;
         }
+
         .modal-content {
             background: white;
             padding: 30px;
             border-radius: 8px;
             text-align: center;
             min-width: 300px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
     </style>
 </head>
+
 <body>
 
-<header>
-    <div class="exam-info">SSC CGL Mock Typing Test</div>
-    <div class="stats-bar">
-        <div class="stat-box">Time Left: <span id="timer">15:00</span></div>
-        <div class="stat-box">WPM: <span id="wpm">0</span></div>
-        <div class="stat-box">Accuracy: <span id="accuracy">100%</span></div>
+    <header>
+        <div class="exam-info">SSC CGL Mock Typing Test</div>
+        <div class="stats-bar">
+            <div class="stat-box">Time Left: <span id="timer">15:00</span></div>
+            <div class="stat-box">WPM: <span id="wpm">0</span></div>
+            <div class="stat-box">Accuracy: <span id="accuracy">100%</span></div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="panel-wrapper">
+            <div class="box-label">Original Text (Full Passage)</div>
+            <div class="text-panel" id="quoteDisplay"></div>
+        </div>
+
+        <div class="panel-wrapper">
+            <div class="box-label">Type Here</div>
+            <textarea class="input-panel" id="quoteInput" placeholder="Click 'Start Test' to begin typing..."
+                disabled></textarea>
+        </div>
     </div>
-</header>
 
-<div class="container">
-    <div class="panel-wrapper">
-        <div class="box-label">Original Text (Full Passage)</div>
-        <div class="text-panel" id="quoteDisplay"></div>
+    <div class="controls">
+        <label style="margin-right: 15px; display: flex; align-items: center; gap: 5px;">
+            <input type="checkbox" id="examModeToggle"> Exam Mode (No Colors)
+        </label>
+        <button class="btn-start" onclick="startTest()">Start Test</button>
+        <button class="btn-reset" onclick="resetTest()">Reset Test</button>
     </div>
 
-    <div class="panel-wrapper">
-        <div class="box-label">Type Here</div>
-        <textarea class="input-panel" id="quoteInput" placeholder="Click 'Start Test' to begin typing..." disabled></textarea>
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <h2>Test Finished!</h2>
+            <div
+                style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: left; margin-bottom: 20px;">
+                <div>Full Mistakes: <strong id="finalFullMistakes" style="color: red;">0</strong></div>
+                <div>Half Mistakes: <strong id="finalHalfMistakes" style="color: orange;">0</strong></div>
+                <div>Total Errors: <strong id="finalErrors">0</strong></div>
+                <div>Key Depressions: <strong id="finalKeystrokes">0</strong></div>
+            </div>
+            <p>Net WPM: <strong id="finalWpm" style="font-size: 24px; color: #0275d8;">0</strong></p>
+            <p>Accuracy: <strong id="finalAcc">0%</strong></p>
+            <br>
+            <button class="btn-reset" onclick="closeModal()">Close</button>
+        </div>
     </div>
-</div>
 
-<div class="controls">
-    <button class="btn-start" onclick="startTest()">Start Test</button>
-    <button class="btn-reset" onclick="resetTest()">Reset Test</button>
-</div>
+    <script>
+        const passages = [
+            "The digital age has revolutionized the way we communicate and access information. With the advent of smartphones and high-speed internet, knowledge is just a click away. However, this convenience comes with challenges such as data privacy and cyber security threats. It is imperative for users to remain vigilant and adopt best practices to safeguard their personal information.",
+            "Climate change is one of the most pressing issues facing humanity today. Rising global temperatures are leading to melting ice caps, rising sea levels, and more frequent extreme weather events. Governments and individuals alike must take urgent action to reduce carbon footprints and transition to renewable energy sources to ensure a sustainable future for generations to come.",
+            "Education is the cornerstone of a progressive society. It empowers individuals with the skills and knowledge necessary to contribute meaningfully to the economy. Furthermore, education fosters critical thinking and tolerance, which are essential for maintaining social harmony. Investment in education is, therefore, an investment in the nation's future.",
+            "The Indus Valley Civilization was a Bronze Age civilization in the northwestern regions of South Asia, lasting from 3300 BCE to 1300 BCE, and in its mature form from 2600 BCE to 1900 BCE. Together with ancient Egypt and Mesopotamia, it was one of three early civilizations of the near east and South Asia, and of the three, the most widespread, its sites spanning an area stretching from northeast Afghanistan, through much of Pakistan, and into western and northwestern India.",
+            "The Constitution of India is the supreme law of India. The document lays down the framework demarcating fundamental political code, structure, procedures, powers, and duties of government institutions and sets out fundamental rights, directive principles, and the duties of citizens. It is the longest written constitution of any country on earth. B. R. Ambedkar, chairman of the drafting committee, is widely considered to be its chief architect.",
+            "Artificial intelligence (AI) is intelligence demonstrated by machines, as opposed to the natural intelligence displayed by animals including humans. AI research has been defined as the field of study of intelligent agents, which refers to any system that perceives its environment and takes actions that maximize its chance of achieving its goals. The term 'artificial intelligence' had previously been used to describe machines that mimic and display 'human' cognitive skills that are associated with the human mind, such as 'learning' and 'problem-solving'.",
+            "Biodiversity refers to the variety and variability of life on Earth. Biodiversity is typically a measure of variation at the genetic, species, and ecosystem level. Terrestrial biodiversity is usually greater near the equator, which is the result of the warm climate and high primary productivity. Biodiversity is not distributed evenly on Earth, and is richer in the tropics. These tropical forest ecosystems cover less than 10 percent of earth's surface, and contain about 90 percent of the world's species.",
+            "The Reserve Bank of India (RBI) is India's central bank and regulatory body responsible for regulation of the Indian banking system. It is under the ownership of the Ministry of Finance, Government of India. It is responsible for the control, issue and maintaining supply of the Indian rupee. It also manages the country's main payment systems and works to promote its economic development.",
+            "Yoga is a group of physical, mental, and spiritual practices or disciplines which originated in ancient India. Yoga is one of the six Astika (orthodox) schools of Hindu philosophical traditions. There is a broad variety of yoga schools, practices, and goals in Hinduism, Buddhism, and Jainism. The term 'Yoga' in the Western world often denotes a modern form of Hatha yoga and yoga as exercise, consisting largely of the postures or asanas.",
+            "The Indian Space Research Organisation (ISRO) is the national space agency of India, headquartered in Bengaluru. It operates under the Department of Space (DOS) which is directly overseen by the Prime Minister of India, while Chairman of ISRO acts as executive of DOS as well. ISRO is the primary agency in India to perform tasks related to space based applications, space exploration and development of related technologies.",
+            "Sustainable development is the organizing principle for meeting human development goals while simultaneously sustaining the ability of natural systems to provide the natural resources and ecosystem services on which the economy and society depend. The desired result is a state of society where living conditions and resources are used to continue to meet human needs without undermining the integrity and stability of the natural system.",
+            "The Olympics are leading international sporting events featuring summer and winter sports competitions in which thousands of athletes from around the world participate in a variety of competitions. The Olympic Games are considered the world's foremost sports competition with more than 200 nations participating. The Olympic Games are held every four years, with the Summer and Winter Games alternating by occurring every four years but two years apart.",
+            "Agriculture is the practice of cultivating plants and livestock. Agriculture was the key development in the rise of sedentary human civilization, whereby farming of domesticated species created food surpluses that enabled people to live in cities. The history of agriculture began thousands of years ago. After gathering wild grains beginning at least 105,000 years ago, nascent farmers began to plant them around 11,500 years ago."
+        ];
 
-<div id="resultModal" class="modal">
-    <div class="modal-content">
-        <h2>Test Finished!</h2>
-        <p>Net WPM: <strong id="finalWpm" style="font-size: 24px; color: #0275d8;">0</strong></p>
-        <p>Accuracy: <strong id="finalAcc">0%</strong></p>
-        <p>Errors: <strong id="finalErrors" style="color: red;">0</strong></p>
-        <br>
-        <button class="btn-reset" onclick="closeModal()">Close</button>
-    </div>
-</div>
+        const quoteDisplayElement = document.getElementById('quoteDisplay');
+        const quoteInputElement = document.getElementById('quoteInput');
+        const timerElement = document.getElementById('timer');
+        const wpmElement = document.getElementById('wpm');
+        const accElement = document.getElementById('accuracy');
+        const modal = document.getElementById('resultModal');
+        const examModeToggle = document.getElementById('examModeToggle');
 
-<script>
-    const passages = [
-        "The digital age has revolutionized the way we communicate and access information. With the advent of smartphones and high-speed internet, knowledge is just a click away. However, this convenience comes with challenges such as data privacy and cyber security threats. It is imperative for users to remain vigilant and adopt best practices to safeguard their personal information.",
-        "Climate change is one of the most pressing issues facing humanity today. Rising global temperatures are leading to melting ice caps, rising sea levels, and more frequent extreme weather events. Governments and individuals alike must take urgent action to reduce carbon footprints and transition to renewable energy sources to ensure a sustainable future for generations to come.",
-        "Education is the cornerstone of a progressive society. It empowers individuals with the skills and knowledge necessary to contribute meaningfully to the economy. Furthermore, education fosters critical thinking and tolerance, which are essential for maintaining social harmony. Investment in education is, therefore, an investment in the nation's future."
-    ];
+        let timerInterval;
+        let timeLimit = 15 * 60;
+        let timeLeft = timeLimit;
+        let isRunning = false;
 
-    const quoteDisplayElement = document.getElementById('quoteDisplay');
-    const quoteInputElement = document.getElementById('quoteInput');
-    const timerElement = document.getElementById('timer');
-    const wpmElement = document.getElementById('wpm');
-    const accElement = document.getElementById('accuracy');
-    const modal = document.getElementById('resultModal');
+        // Stats
+        let keyDepressions = 0;
+        let fullMistakes = 0;
+        let halfMistakes = 0;
+        let totalErrors = 0;
 
-    let timerInterval;
-    let timeLimit = 15 * 60; 
-    let timeLeft = timeLimit;
-    let isRunning = false;
-    let errors = 0;
-
-    function init() {
-        const text = passages[Math.floor(Math.random() * passages.length)];
-        quoteDisplayElement.innerHTML = '';
-        text.split('').forEach(character => {
-            const characterSpan = document.createElement('span');
-            characterSpan.innerText = character;
-            quoteDisplayElement.appendChild(characterSpan);
-        });
-        quoteInputElement.value = null;
-        quoteInputElement.disabled = true;
-    }
-
-    function startTest() {
-        if (isRunning) return;
-        isRunning = true;
-        quoteInputElement.disabled = false;
-        quoteInputElement.focus();
-        timerInterval = setInterval(updateTimer, 1000);
-    }
-
-    function updateTimer() {
-        if (timeLeft > 0) {
-            timeLeft--;
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            timerElement.innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-            calculateStats();
-        } else {
-            finishTest();
-        }
-    }
-
-    quoteInputElement.addEventListener('input', () => {
-        if(!isRunning) startTest();
-
-        const arrayQuote = quoteDisplayElement.querySelectorAll('span');
-        const arrayValue = quoteInputElement.value.split('');
-        let currentErrors = 0;
-        let correctChars = 0;
-
-        // Auto-scroll the reading pane to match typing (Basic Logic)
-        if(arrayValue.length % 50 === 0) {
-             // Optional: Add auto-scroll logic here if needed for very long texts
+        function init() {
+            const text = passages[Math.floor(Math.random() * passages.length)];
+            quoteDisplayElement.innerHTML = '';
+            text.split('').forEach(character => {
+                const characterSpan = document.createElement('span');
+                characterSpan.innerText = character;
+                quoteDisplayElement.appendChild(characterSpan);
+            });
+            quoteInputElement.value = null;
+            quoteInputElement.disabled = true;
+            resetStats();
         }
 
-        arrayQuote.forEach((characterSpan, index) => {
-            const character = arrayValue[index];
-            if (character == null) {
-                characterSpan.classList.remove('correct');
-                characterSpan.classList.remove('incorrect');
-            } else if (character === characterSpan.innerText) {
-                characterSpan.classList.add('correct');
-                characterSpan.classList.remove('incorrect');
-                correctChars++;
+        function resetStats() {
+            keyDepressions = 0;
+            fullMistakes = 0;
+            halfMistakes = 0;
+            totalErrors = 0;
+            wpmElement.innerText = "0";
+            accElement.innerText = "100%";
+        }
+
+        function startTest() {
+            if (isRunning) return;
+            isRunning = true;
+            quoteInputElement.disabled = false;
+            quoteInputElement.focus();
+            timerInterval = setInterval(updateTimer, 1000);
+
+            // Check mode immediately
+            updateDisplayMode();
+        }
+
+        function updateTimer() {
+            if (timeLeft > 0) {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerElement.innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                calculateStats(false);
             } else {
-                characterSpan.classList.remove('correct');
-                characterSpan.classList.add('incorrect');
-                currentErrors++;
+                finishTest();
             }
+        }
+
+        // Toggle Exam Mode Visuals
+        examModeToggle.addEventListener('change', updateDisplayMode);
+
+        function updateDisplayMode() {
+            const spans = quoteDisplayElement.querySelectorAll('span');
+            spans.forEach(span => {
+                if (examModeToggle.checked) {
+                    // Clear colors in Exam Mode
+                    span.style.color = 'black';
+                    span.style.backgroundColor = 'transparent';
+                } else {
+                    // Restore classes logic is handled in 'input' event, 
+                    // but we might need to re-apply if user toggles mid-test.
+                    // For simplicity, we just clear styles. The next input event will recolor.
+                    span.removeAttribute('style');
+                }
+            });
+
+            // Trigger input event logic to re-color if switching BACK to practice mode
+            if (!examModeToggle.checked && isRunning) {
+                quoteInputElement.dispatchEvent(new Event('input'));
+            }
+        }
+
+        quoteInputElement.addEventListener('input', (e) => {
+            if (!isRunning) startTest();
+
+            // Track key depressions (approximate: length of value)
+            keyDepressions = quoteInputElement.value.length;
+
+            const arrayQuote = quoteDisplayElement.querySelectorAll('span');
+            const arrayValue = quoteInputElement.value.split('');
+
+            let currentErrors = 0;
+            // Recalculate errors based on current input vs original text
+            // strictly up to the length of what is typed.
+            arrayValue.forEach((char, index) => {
+                if (index < arrayQuote.length) {
+                    if (char !== arrayQuote[index].innerText) {
+                        currentErrors++;
+                    }
+                } else {
+                    // Extra characters are mistakes
+                    currentErrors++;
+                }
+            });
+            errors = currentErrors;
+
+            // Visual Feedback Logic
+            if (!examModeToggle.checked) {
+                arrayQuote.forEach((characterSpan, index) => {
+                    const character = arrayValue[index];
+                    // Reset inline styles first
+                    characterSpan.removeAttribute('style');
+
+                    if (character == null) {
+                        characterSpan.classList.remove('correct');
+                        characterSpan.classList.remove('incorrect');
+                    } else if (character === characterSpan.innerText) {
+                        characterSpan.classList.add('correct');
+                        characterSpan.classList.remove('incorrect');
+                    } else {
+                        characterSpan.classList.remove('correct');
+                        characterSpan.classList.add('incorrect');
+                    }
+                });
+            } else {
+                // Ensure plain look in exam mode
+                arrayQuote.forEach(span => {
+                    span.classList.remove('correct');
+                    span.classList.remove('incorrect');
+                });
+            }
+
+            calculateStats(false);
         });
-        
-        errors = currentErrors;
-        calculateStats(correctChars, arrayValue.length);
-    });
 
-    quoteInputElement.addEventListener('paste', e => e.preventDefault());
+        // Block Paste
+        quoteInputElement.addEventListener('paste', e => e.preventDefault());
 
-    function calculateStats(correctChars, totalTyped) {
-        if (!totalTyped) totalTyped = quoteInputElement.value.length;
-        const timeElapsed = timeLimit - timeLeft;
-        const timeElapsedMin = timeElapsed / 60;
-        
-        let wpm = 0;
-        if (timeElapsedMin > 0) {
-            wpm = Math.round((totalTyped / 5) / timeElapsedMin);
+        function calculateStats(isFinal) {
+            const timeElapsed = timeLimit - timeLeft;
+            const timeElapsedMin = timeElapsed / 60;
+
+            // Standard Gross WPM
+            let grossWPM = 0;
+            if (timeElapsedMin > 0) {
+                grossWPM = Math.round((keyDepressions / 5) / timeElapsedMin);
+            }
+
+            // Real-time Accuracy: (Current Length - Current Errors) / Current Length
+            let accuracy = 100;
+            let currentLen = quoteInputElement.value.length;
+            if (currentLen > 0) {
+                accuracy = Math.round(((currentLen - errors) / currentLen) * 100);
+            }
+            if (accuracy < 0) accuracy = 0;
+
+            wpmElement.innerText = grossWPM;
+            accElement.innerText = accuracy + "%";
         }
-        
-        let accuracy = 0;
-        if (totalTyped > 0) {
-            accuracy = Math.round(((totalTyped - errors) / totalTyped) * 100);
+
+        function finishTest() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            quoteInputElement.disabled = true;
+
+            // --- FINAL EVALUATION (Better SSC approximation) ---
+            const originalText = quoteDisplayElement.innerText;
+            const typedText = quoteInputElement.value;
+
+            const origWords = originalText.trim().split(/\s+/);
+            const typedWords = typedText.trim().split(/\s+/);
+
+            fullMistakes = 0;
+            halfMistakes = 0;
+
+            // Simple Word-wise comparison (This is a simplified SSC model)
+            // Real SSC evaluation is complex (shifting windows). 
+            // We'll use a positional comparison for now.
+
+            let minLen = Math.min(origWords.length, typedWords.length);
+
+            for (let i = 0; i < minLen; i++) {
+                if (origWords[i] === typedWords[i]) {
+                    // Correct
+                } else if (origWords[i].toLowerCase() === typedWords[i].toLowerCase()) {
+                    // Capitalization error -> Half Mistake
+                    halfMistakes++;
+                } else {
+                    // Wrong word / Spelling -> Full Mistake
+                    fullMistakes++;
+                }
+            }
+
+            // Omitted words or Extra words at the end
+            const lengthDiff = Math.abs(origWords.length - typedWords.length);
+            fullMistakes += lengthDiff;
+
+            totalErrors = fullMistakes + (halfMistakes / 2);
+
+            // Calculation
+            const timeElapsedMin = (timeLimit - timeLeft) / 60;
+            const grossWPM = Math.round((keyDepressions / 5) / timeElapsedMin) || 0;
+
+            // Net WPM = Gross WPM - (Errors / Time) ?? 
+            // SSC often uses: (Total Key Depressions - (FullMistakes * X + HalfMistakes * Y)) / Total Time ...
+            // Let's stick to a standard: Net WPM = Gross WPM - (Errors / TimeMinutes)
+            let netWPM = Math.round(grossWPM - (totalErrors / timeElapsedMin));
+            if (netWPM < 0) netWPM = 0;
+
+            const accuracy = Math.max(0, 100 - ((totalErrors / origWords.length) * 100)).toFixed(2);
+
+            document.getElementById('finalFullMistakes').innerText = fullMistakes;
+            document.getElementById('finalHalfMistakes').innerText = halfMistakes;
+            document.getElementById('finalErrors').innerText = totalErrors;
+            document.getElementById('finalKeystrokes').innerText = keyDepressions;
+            document.getElementById('finalWpm').innerText = netWPM;
+            document.getElementById('finalAcc').innerText = accuracy + "%";
+
+            modal.style.display = 'flex';
         }
 
-        wpmElement.innerText = wpm;
-        accElement.innerText = accuracy + "%";
-    }
+        function resetTest() {
+            clearInterval(timerInterval);
+            timeLeft = timeLimit;
+            isRunning = false;
+            timerElement.innerText = "15:00";
+            wpmElement.innerText = "0";
+            accElement.innerText = "100%";
+            errors = 0;
+            init();
+            modal.style.display = 'none';
+        }
 
-    function finishTest() {
-        clearInterval(timerInterval);
-        isRunning = false;
-        quoteInputElement.disabled = true;
-        document.getElementById('finalWpm').innerText = wpmElement.innerText;
-        document.getElementById('finalAcc').innerText = accElement.innerText;
-        document.getElementById('finalErrors').innerText = errors;
-        modal.style.display = 'flex';
-    }
+        function closeModal() {
+            modal.style.display = 'none';
+            resetTest();
+        }
 
-    function resetTest() {
-        clearInterval(timerInterval);
-        timeLeft = timeLimit;
-        isRunning = false;
-        timerElement.innerText = "15:00";
-        wpmElement.innerText = "0";
-        accElement.innerText = "100%";
-        errors = 0;
         init();
-    }
-
-    function closeModal() {
-        modal.style.display = 'none';
-        resetTest();
-    }
-
-    init();
-</script>
+    </script>
 
 </body>
+
 </html>
