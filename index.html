@@ -623,16 +623,10 @@
                     if (idx === inputWords.length - 1 && !currentInput.endsWith(' ')) {
                         // Current word being typed
                         el.className = 'word-current';
-                        // Check strict prefix match
-                        if (typed.length > 0 && !orig.startsWith(typed)) {
-                            // Error: Red text on Yellow background
-                            el.style.backgroundColor = 'var(--highlight-yellow)';
-                            el.style.color = 'red';
-                        } else {
-                            // Correct so far: Black text on Yellow background
-                            el.style.backgroundColor = 'var(--highlight-yellow)';
-                            el.style.color = 'black';
-                        }
+                        // Keep text BLACK and background YELLOW regardless of correctness
+                        // Error is only registered/shown after submission (space)
+                        el.style.backgroundColor = 'var(--highlight-yellow)';
+                        el.style.color = 'black';
                     } else {
                         // Past word (completed)
                         if (typed === orig) {
