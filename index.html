@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSC CGL Typing Practice (Fixed Layout)</title>
+    <style>
+        /* General Reset */
+        :root {
+            --ssc-header: #2c3e50;
+            --ssc-bg: #f0f0f0;
+            --ssc-border: #ccc;
+            --error-color: #d9534f;
+            --highlight-bg: #e6e6e6;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--ssc-bg);
+            margin: 0;
+            padding: 0;
+            height: 100vh; /* Full viewport height */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Prevent scrolling of the whole page */
+        }
+
+        /* Top Header - Fixed Height */
+        header {
+            background-color: var(--ssc-header);
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+            flex-shrink: 0; /* Prevents header from shrinking */
+        }
+
+        .exam-info { font-weight: bold; }
+        
+        .stats-bar { display: flex; gap: 15px; }
+        .stat-box {
+            background: rgba(255,255,255,0.1);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        /* Main Container - Takes remaining space */
+        .container {
+            display: flex;
+            flex-direction: column;
+            flex: 1; /* Grow to fill space between header and footer */
+            padding: 10px;
+            gap: 10px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 0; /* Crucial for scrolling inside flex items */
+        }
+
+        /* Input/Output Wrapper */
+        .panel-wrapper {
+            display: flex;
+            flex-direction: column;
+            flex: 1; /* Takes half the container space */
+            min-height: 0; /* Allows children to scroll */
+        }
+
+        .box-label {
+            font-size: 12px;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 5px;
+            flex-shrink: 0;
+        }
+
+        /* Text Areas */
+        .text-panel, textarea.input-panel {
+            width: 100%;
+            flex: 1; /* Grow to fill the wrapper */
+            resize: none;
+            padding: 15px;
+            font-size: 18px; /* Slightly larger for better readability */
+            line-height: 1.6;
+            border: 1px solid var(--ssc-border);
+            border-radius: 4px;
+            font-family: 'Times New Roman', Times, serif;
+            background: white;
+            overflow-y: auto; /* Scroll inside the box, not the page */
+        }
+
+        /* Character Highlighting */
+        span.correct { color: green; }
+        span.incorrect { background-color: var(--error-color); color: white; }
+
+        /* Bottom Controls - Fixed at bottom */
+        .controls {
+            background: #fff;
+            border-top: 1px solid #ccc;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: flex-end; /* Align buttons to right */
+            gap: 10px;
+            flex-shrink: 0; /* Prevent controls from shrinking */
+            z-index: 10;
+        }
+
+        button {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .btn-start { background-color: #5cb85c; color: white; }
+        .btn-reset { background-color: #d9534f; color: white; }
+        
+        button:hover { opacity: 0.9; }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 300px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="exam-info">SSC CGL Mock Typing Test</div>
+    <div class="stats-bar">
+        <div class="stat-box">Time Left: <span id="timer">15:00</span></div>
+        <div class="stat-box">WPM: <span id="wpm">0</span></div>
+        <div class="stat-box">Accuracy: <span id="accuracy">100%</span></div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="panel-wrapper">
+        <div class="box-label">Original Text (Full Passage)</div>
+        <div class="text-panel" id="quoteDisplay"></div>
+    </div>
+
+    <div class="panel-wrapper">
+        <div class="box-label">Type Here</div>
+        <textarea class="input-panel" id="quoteInput" placeholder="Click 'Start Test' to begin typing..." disabled></textarea>
+    </div>
+</div>
+
+<div class="controls">
+    <button class="btn-start" onclick="startTest()">Start Test</button>
+    <button class="btn-reset" onclick="resetTest()">Reset Test</button>
+</div>
+
+<div id="resultModal" class="modal">
+    <div class="modal-content">
+        <h2>Test Finished!</h2>
+        <p>Net WPM: <strong id="finalWpm" style="font-size: 24px; color: #0275d8;">0</strong></p>
+        <p>Accuracy: <strong id="finalAcc">0%</strong></p>
+        <p>Errors: <strong id="finalErrors" style="color: red;">0</strong></p>
+        <br>
+        <button class="btn-reset" onclick="closeModal()">Close</button>
+    </div>
+</div>
+
+<script>
+    const passages = [
+        "The digital age has revolutionized the way we communicate and access information. With the advent of smartphones and high-speed internet, knowledge is just a click away. However, this convenience comes with challenges such as data privacy and cyber security threats. It is imperative for users to remain vigilant and adopt best practices to safeguard their personal information.",
+        "Climate change is one of the most pressing issues facing humanity today. Rising global temperatures are leading to melting ice caps, rising sea levels, and more frequent extreme weather events. Governments and individuals alike must take urgent action to reduce carbon footprints and transition to renewable energy sources to ensure a sustainable future for generations to come.",
+        "Education is the cornerstone of a progressive society. It empowers individuals with the skills and knowledge necessary to contribute meaningfully to the economy. Furthermore, education fosters critical thinking and tolerance, which are essential for maintaining social harmony. Investment in education is, therefore, an investment in the nation's future."
+    ];
+
+    const quoteDisplayElement = document.getElementById('quoteDisplay');
+    const quoteInputElement = document.getElementById('quoteInput');
+    const timerElement = document.getElementById('timer');
+    const wpmElement = document.getElementById('wpm');
+    const accElement = document.getElementById('accuracy');
+    const modal = document.getElementById('resultModal');
+
+    let timerInterval;
+    let timeLimit = 15 * 60; 
+    let timeLeft = timeLimit;
+    let isRunning = false;
+    let errors = 0;
+
+    function init() {
+        const text = passages[Math.floor(Math.random() * passages.length)];
+        quoteDisplayElement.innerHTML = '';
+        text.split('').forEach(character => {
+            const characterSpan = document.createElement('span');
+            characterSpan.innerText = character;
+            quoteDisplayElement.appendChild(characterSpan);
+        });
+        quoteInputElement.value = null;
+        quoteInputElement.disabled = true;
+    }
+
+    function startTest() {
+        if (isRunning) return;
+        isRunning = true;
+        quoteInputElement.disabled = false;
+        quoteInputElement.focus();
+        timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    function updateTimer() {
+        if (timeLeft > 0) {
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            calculateStats();
+        } else {
+            finishTest();
+        }
+    }
+
+    quoteInputElement.addEventListener('input', () => {
+        if(!isRunning) startTest();
+
+        const arrayQuote = quoteDisplayElement.querySelectorAll('span');
+        const arrayValue = quoteInputElement.value.split('');
+        let currentErrors = 0;
+        let correctChars = 0;
+
+        // Auto-scroll the reading pane to match typing (Basic Logic)
+        if(arrayValue.length % 50 === 0) {
+             // Optional: Add auto-scroll logic here if needed for very long texts
+        }
+
+        arrayQuote.forEach((characterSpan, index) => {
+            const character = arrayValue[index];
+            if (character == null) {
+                characterSpan.classList.remove('correct');
+                characterSpan.classList.remove('incorrect');
+            } else if (character === characterSpan.innerText) {
+                characterSpan.classList.add('correct');
+                characterSpan.classList.remove('incorrect');
+                correctChars++;
+            } else {
+                characterSpan.classList.remove('correct');
+                characterSpan.classList.add('incorrect');
+                currentErrors++;
+            }
+        });
+        
+        errors = currentErrors;
+        calculateStats(correctChars, arrayValue.length);
+    });
+
+    quoteInputElement.addEventListener('paste', e => e.preventDefault());
+
+    function calculateStats(correctChars, totalTyped) {
+        if (!totalTyped) totalTyped = quoteInputElement.value.length;
+        const timeElapsed = timeLimit - timeLeft;
+        const timeElapsedMin = timeElapsed / 60;
+        
+        let wpm = 0;
+        if (timeElapsedMin > 0) {
+            wpm = Math.round((totalTyped / 5) / timeElapsedMin);
+        }
+        
+        let accuracy = 0;
+        if (totalTyped > 0) {
+            accuracy = Math.round(((totalTyped - errors) / totalTyped) * 100);
+        }
+
+        wpmElement.innerText = wpm;
+        accElement.innerText = accuracy + "%";
+    }
+
+    function finishTest() {
+        clearInterval(timerInterval);
+        isRunning = false;
+        quoteInputElement.disabled = true;
+        document.getElementById('finalWpm').innerText = wpmElement.innerText;
+        document.getElementById('finalAcc').innerText = accElement.innerText;
+        document.getElementById('finalErrors').innerText = errors;
+        modal.style.display = 'flex';
+    }
+
+    function resetTest() {
+        clearInterval(timerInterval);
+        timeLeft = timeLimit;
+        isRunning = false;
+        timerElement.innerText = "15:00";
+        wpmElement.innerText = "0";
+        accElement.innerText = "100%";
+        errors = 0;
+        init();
+    }
+
+    function closeModal() {
+        modal.style.display = 'none';
+        resetTest();
+    }
+
+    init();
+</script>
+
+</body>
+</html>
