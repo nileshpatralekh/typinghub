@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSC CGL Typing Practice</title>
+    <title>Typing Hub</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2c3e50">
     <link rel="apple-touch-icon" href="icon-192.png">
@@ -297,7 +297,10 @@
             <button id="btn-start-test" onclick="startTest()"
                 style="background: #5cb85c; color: white; border: none; padding: 5px 15px; border-radius: 3px; cursor: pointer; font-weight: bold;">Start
                 Test</button>
-            <div style="font-size: 14px;">Time Left: <span id="timer">15:00</span></div>
+            <button id="btn-reset-test" onclick="manualReset()"
+                style="background: #d9534f; color: white; border: none; padding: 5px 15px; border-radius: 3px; cursor: pointer; font-weight: bold;"
+                disabled>Reset Passage</button>
+            <div style="font-size: 14px;">Time Left: <span id="timer">10:00</span></div>
         </div>
     </header>
 
@@ -397,17 +400,12 @@
     </div>
 
     <script>
-        // Sample Passage
-        const passages = [
-            "India is grappling with some of the fundamental challenges that should be taken up on a priority basis. The basic indicators of growth are not at par with the aspirations of the common people and a genuine willingness to set things straight is still missing. The national issues that continue to hold India back from achieving its development goals have not changed much over the years.",
-            "The quick brown fox jumps over the lazy dog. This is a classic pangram used to test typewriters and computer keyboards. It contains every letter of the alphabet. Typing accuracy is crucial for professional work.",
-            "Technology has transformed the way we live and work. From smartphones to artificial intelligence, innovation drives progress. However, we must also consider the ethical implications of these advancements."
-        ];
 
         // State Elements
         const quoteDisplay = document.getElementById('quoteDisplay');
         const quoteInput = document.getElementById('quoteInput');
         const btnStart = document.getElementById('btn-start-test');
+        const btnReset = document.getElementById('btn-reset-test');
 
         // Stats Elements
         const elKeystrokes = document.getElementById('stat-keystrokes');
@@ -424,9 +422,18 @@
 
         let mode = 'exam'; // 'exam' or 'practice'
         let timerInterval;
-        let timeLimit = 15 * 60; // 15 mins
+        let timeLimit = 10 * 60; // 10 mins
         let timeLeft = timeLimit;
         let isRunning = false;
+
+        // Passages Data (Embedded for local compatibility)
+        let passages = [
+            "India's G20 Presidency marked a historic milestone in the country's diplomatic journey, showcasing its emergence as a global leader capable of bridging the divide between the Global North and the Global South. The theme 'Vasudhaiva Kutumbakam' or 'One Earth, One Family, One Future' resonated deeply with the international community, emphasizing the interconnectedness of all life forms and the need for collaborative action to address global challenges. During its presidency, India prioritized issues such as inclusive growth, digital public infrastructure, climate financing, and women-led development. The New Delhi Leaders' Declaration was a significant achievement, demonstrating India's ability to forge consensus on contentious geopolitical issues. The inclusion of the African Union as a permanent member of the G20 was a testament to India's commitment to inclusivity and representation for developing nations. The presidency also highlighted India's rich cultural heritage and diversity through meetings held across various cities, boosting tourism and local economies. Furthermore, the focus on digital transformation showcased India's prowess in technology and its potential to provide scalable solutions for the world. As the baton passed to Brazil, India's legacy remained one of unity, determination, and a vision for a sustainable and equitable future for all humanity.",
+            "The Digital India initiative, launched in 2015, has transformed the nation into a digitally empowered society and knowledge economy. By ensuring high-speed internet connectivity to rural areas, promoting digital literacy, and developing secure digital infrastructure, the program has bridged the digital divide and brought government services to the fingertips of citizens. A cornerstone of this revolution is the Unified Payments Interface (UPI), which has gained global recognition for its efficiency and scale, revolutionizing how Indians transact daily. Direct Benefit Transfers (DBT) enabled by the JAM trinity (Jan Dhan, Aadhaar, Mobile) have ensured that welfare subsidies reach the intended beneficiaries directly, curbing leakages and corruption. The proliferation of smartphones and affordable data has further fueled the growth of e-commerce, ed-tech, and health-tech sectors, creating new avenues for employment and entrepreneurship. Initiatives like DigiLocker have simplified document verification, while the ONDC (Open Network for Digital Commerce) aims to democratize digital commerce. However, challenges such as cybersecurity threats and the need for robust data protection laws remain. As India moves towards a trillion-dollar digital economy, the focus must remain on inclusivity, ensuring that the benefits of technology reach the last mile and empower every citizen.",
+            "Chandrayaan-3's successful soft landing on the moon's south pole was a momentous occasion that etched India's name in the history of space exploration. This achievement made India the fourth country to land on the moon and the first to reach the uncharted lunar south pole region. The mission demonstrated ISRO's resilience and engineering prowess, bouncing back from the partial failure of its predecessor. The Vikram lander and Pragyan rover conducted in-situ scientific experiments, studying the lunar surface's thermal properties, seismic activity, and elemental composition. The discovery of sulphur and other elements provided crucial insights into the moon's geological history. Beyond the scientific gains, Chandrayaan-3 ignited a passion for science and technology among India's youth and bolstered the country's reputation as a cost-effective and reliable space power. The mission's success has opened doors for deeper international collaboration and future interplanetary expeditions. It also underscored the potential of India's private space sector, which is witnessing rapid growth. As India aims for the stars with upcoming missions like Gaganyaan, the spirit of Chandrayaan-3 serves as a beacon of inspiration, proving that with determination and innovation, even the sky is not the limit.",
+            "India's startup ecosystem has witnessed exponential growth over the past decade, evolving into the third-largest in the world. Driven by a young and aspirational population, affordable internet, and a supportive policy environment, Indian startups are solving complex problems across diverse sectors. From fintech and e-commerce to health-tech and agritech, entrepreneurs are leveraging technology to create value and drive social impact. The rise of unicorns—startups valued at over a billion dollars—has been rapid, signaling the maturity and investor confidence in the Indian market. Government initiatives like 'Startup India' have played a catalytic role by providing tax benefits, simplifying regulations, and setting up fund-of-funds. Innovation hubs and incubators in academic institutions are nurturing the next generation of founders. However, the ecosystem faces challenges such as funding winters, regulatory hurdles, and the need for sustainable business models. Deep-tech and manufacturing startups, in particular, require patient capital and long-term support. As the ecosystem matures, the focus is shifting from valuation to value creation, corporate governance, and profitability. With a vast domestic market and global ambitions, Indian startups are poised to play a pivotal role in the country's journey towards becoming a developed nation by 2047.",
+            "Infrastructure development has been a central pillar of India's growth strategy, with the government aggressively pushing for modernization to enhance connectivity and economic efficiency. The PM Gati Shakti National Master Plan is a transformative approach to coordinate infrastructure planning and execution across various ministries. The rapid expansion of the highway network, the dedicated freight corridors, and the modernization of railways with Vande Bharat trains are revolutionizing logistics and travel. The aviation sector is also witnessing a boom with the construction of new airports under the UDAN scheme, making air travel accessible to smaller cities. Urban infrastructure is being upgraded through the Smart Cities Mission and the expansion of metro rail networks in major cities. Additionally, the focus on renewable energy infrastructure, such as solar parks and green hydrogen hubs, aligns with India's climate goals. These developments are not only creating jobs but also attracting foreign investment by reducing the cost of doing business. However, ensuring the sustainability and maintenance of these assets is crucial. As India builds for the future, the emphasis must be on resilient, eco-friendly, and inclusive infrastructure that caters to the needs of a growing population and a dynamic economy."
+        ];
 
         // Data Tracking
         let originalText = "";
@@ -474,7 +481,9 @@
         function init() {
             // Pick random passage
             originalText = passages[Math.floor(Math.random() * passages.length)];
-            originalWords = originalText.split(/\s+/);
+            // Normalize spaces
+            originalText = originalText.replace(/\s+/g, ' ').trim();
+            originalWords = originalText.split(' ');
 
             renderText();
             quoteInput.value = '';
@@ -482,15 +491,17 @@
             // Disable input until Start is clicked
             quoteInput.disabled = true;
             quoteInput.placeholder = "Click 'Start Test' to begin...";
-            btnStart.style.display = 'block'; // Show Start Button
-            btnStart.disabled = false;
 
-            // Reset Stats
+            btnStart.style.display = 'block'; // Show Start Button
+            // btnReset state: Enabled when NOT running (Idle)
+            // User requested: "disabled during the test"
+            btnReset.disabled = false;
+
+            // Stats Reset
             backspaceCount = 0;
             timeLeft = timeLimit;
-            elTimer.innerText = "15:00";
+            elTimer.innerText = "10:00";
 
-            // Clear stats UI
             updateStatsUI(0, 0, 0, 0, 0, 0, 0, 0);
         }
 
@@ -503,6 +514,7 @@
             quoteInput.placeholder = "Type here...";
 
             btnStart.style.display = 'none'; // Hide Start Button
+            btnReset.disabled = true; // Disable Reset during test
 
             startTime = new Date();
             timerInterval = setInterval(() => {
@@ -727,6 +739,12 @@
             clearInterval(timerInterval);
             isRunning = false;
             init();
+        }
+
+        // Manual passage refresh (Button Click)
+        function manualReset() {
+            if (isRunning) return; // Should be disabled anyway
+            resetTest();
         }
 
         // Start on load
