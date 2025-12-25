@@ -583,18 +583,7 @@
             if (!isRunning) return; // Should be disabled anyway
 
             if (e.key === 'Backspace') {
-                if (mode === 'exam') {
-                    // Prevent deleting past words (if char before cursor is space)
-                    const cursor = quoteInput.selectionStart;
-                    if (cursor > 0) {
-                        const charToDelete = quoteInput.value[cursor - 1];
-                        if (charToDelete === ' ') {
-                            e.preventDefault();
-                            return;
-                        }
-                    }
-                }
-
+                // Backspace is ALLOWED now for correction
                 backspaceCount++;
                 elBackspace.innerText = backspaceCount;
             }
@@ -611,63 +600,31 @@
             executeStatsLogic();
         });
 
-        // --- EXAM MODE LOGIC (Word Based) ---
         // --- EXAM MODE LOGIC (Word Based Limit, Char Based Validation) ---
         function handleExamInput() {
             const currentInput = quoteInput.value;
-            const currentLength = currentInput.length;
+            let inputWords = currentInput.split(' '); // Don't use \s+ to preserve explicit spaces
 
-            // Re-calculate word start/end indices on the fly (or could cache in init)
-            // We assume originalText is single-spaced as normalized in init()
-            let charIndex = 0;
-
-            originalWords.forEach((word, idx) => {
+            originalWords.forEach((orig, idx) => {
                 const el = document.getElementById(`word-${idx}`);
                 if (!el) return;
 
-                const start = charIndex;
-                const end = charIndex + word.length; // Exclusive end of word content
-                // Next char is space (except last word)
-                charIndex = end + 1;
+                const typed = inputWords[idx];
 
                 // Reset styles
                 el.className = '';
                 el.style.backgroundColor = '';
                 el.style.color = '';
 
-                // Logic based on input cursor position relative to this word
-                if (currentLength > end) {
-                    // Cursor is past this word (including the space after it)
-                    // Or at least past the word. Check if space was typed? 
-                    // Strict mode: Check if the segment in currentInput matches exactly
-
-                    const userSegment = currentInput.substring(start, end);
-                    if (userSegment === word) {
-                        el.className = 'word-correct';
-                    } else {
-                        el.className = 'word-wrong';
-                    }
-                } else if (currentLength >= start) {
-                    // Cursor is INSIDE this word
-                    el.className = 'word-current';
-
-                    // Check if what's typed SO FAR for this word is correct
-                    const userSegment = currentInput.substring(start, currentLength);
-                    const targetSegment = word.substring(0, userSegment.length);
-
-                    if (userSegment !== targetSegment) {
-                        // Error in current typing
-                        el.style.backgroundColor = 'var(--highlight-yellow)';
-                        el.style.color = 'red';
-                    } else {
-                        // Correct so far
-                        el.style.backgroundColor = 'var(--highlight-yellow)';
-                        el.style.color = 'black';
-                    }
+            } else {
+                // Correct so far
+                el.style.backgroundColor = 'var(--highlight-yellow)';
+                el.style.color = 'black';
+            }
                 } else {
-                    // Cursor not reached yet
-                    el.className = 'word-pending';
-                }
+            // Cursor not reached yet
+            el.className = 'word-pending';
+        }
             });
         }
 
