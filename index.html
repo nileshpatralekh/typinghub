@@ -4,18 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSC CGL Typing Practice (Fixed Layout)</title>
+    <title>SSC CGL Typing Practice</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2c3e50">
     <link rel="apple-touch-icon" href="icon-192.png">
     <style>
-        /* General Reset */
         :root {
-            --ssc-header: #2c3e50;
-            --ssc-bg: #f0f0f0;
-            --ssc-border: #ccc;
-            --error-color: #d9534f;
-            --highlight-bg: #e6e6e6;
+            --header-bg: #333;
+            --header-text: #fff;
+            --blue-bar: #4a86e8;
+            --highlight-yellow: #ffff00;
+            --highlight-green: #008000;
+            --highlight-red: #ff0000;
+            --bg-gray: #f5f5f5;
+            --border-color: #ccc;
         }
 
         * {
@@ -24,142 +26,239 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background-color: var(--ssc-bg);
+            background-color: var(--bg-gray);
             margin: 0;
             padding: 0;
             height: 100vh;
-            /* Full viewport height */
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            /* Prevent scrolling of the whole page */
         }
 
-        /* Top Header - Fixed Height */
+        /* Top Header */
         header {
-            background-color: var(--ssc-header);
-            color: white;
-            padding: 10px 20px;
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            padding: 0 20px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-title {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .tabs {
+            display: flex;
+            height: 100%;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: #aaa;
+            padding: 0 20px;
+            cursor: pointer;
+            font-weight: bold;
+            height: 100%;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: #fff;
+            border-bottom: 3px solid var(--blue-bar);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Main Content Grid */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        /* Left Side (Typing Area) */
+        .left-pane {
+            flex: 3;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #ccc;
+            background: white;
+            min-width: 0;
+            /* Fix flex overflow */
+        }
+
+        .info-bar {
+            background-color: #e0e0e0;
+            padding: 5px 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 60px;
-            flex-shrink: 0;
-            /* Prevents header from shrinking */
-        }
-
-        .exam-info {
-            font-weight: bold;
-        }
-
-        .stats-bar {
-            display: flex;
-            gap: 15px;
-        }
-
-        .stat-box {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 5px 10px;
-            border-radius: 4px;
+            border-bottom: 1px solid #ccc;
             font-size: 14px;
         }
 
-        /* Main Container - Takes remaining space */
-        .container {
+        .blue-header {
+            background-color: #4387cc;
+            color: white;
+            padding: 8px 15px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .typing-area {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            flex: 1;
-            /* Grow to fill space between header and footer */
             padding: 10px;
             gap: 10px;
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            min-height: 0;
-            /* Crucial for scrolling inside flex items */
+            overflow-y: auto;
         }
 
-        /* Input/Output Wrapper */
-        .panel-wrapper {
+        .text-box {
+            border: 1px solid black;
+            padding: 15px;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 18px;
+            line-height: 1.6;
+            overflow-y: auto;
+            flex: 1;
+            white-space: pre-wrap;
+        }
+
+        .input-box {
+            border: 2px solid #4387cc;
+            padding: 15px;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 18px;
+            line-height: 1.6;
+            flex: 1;
+            resize: none;
+        }
+
+        /* Exam Mode Highlights */
+        span.word-pending {
+            color: black;
+        }
+
+        span.word-current {
+            background-color: var(--highlight-yellow);
+        }
+
+        span.word-correct {
+            color: var(--highlight-green);
+        }
+
+        span.word-wrong {
+            color: var(--highlight-red);
+        }
+
+        /* Practice Mode Highlights */
+        span.char-correct {
+            color: green;
+            background-color: #e6ffFA;
+        }
+
+        span.char-wrong {
+            color: red;
+            background-color: #ffe6e6;
+        }
+
+        span.char-current {
+            text-decoration: underline;
+            background-color: #eee;
+        }
+
+        /* Right Side (Sidebar) */
+        .right-pane {
+            flex: 1;
+            background-color: #f9f9f9;
+            padding: 15px;
             display: flex;
             flex-direction: column;
-            flex: 1;
-            /* Takes half the container space */
-            min-height: 0;
-            /* Allows children to scroll */
+            gap: 20px;
+            min-width: 250px;
+            overflow-y: auto;
+            border-left: 2px solid #ccc;
         }
 
-        .box-label {
-            font-size: 12px;
+        .profile-section {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: #fff;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .profile-img {
+            width: 50px;
+            height: 50px;
+            background: #ccc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #fff;
+        }
+
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border: 1px solid #ddd;
+        }
+
+        .stats-table td {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
+        }
+
+        .stats-table td:first-child {
             font-weight: bold;
             color: #555;
-            margin-bottom: 5px;
-            flex-shrink: 0;
         }
 
-        /* Text Areas */
-        .text-panel,
-        textarea.input-panel {
-            width: 100%;
-            flex: 1;
-            /* Grow to fill the wrapper */
-            resize: none;
-            padding: 15px;
-            font-size: 18px;
-            /* Slightly larger for better readability */
-            line-height: 1.6;
-            border: 1px solid var(--ssc-border);
-            border-radius: 4px;
-            font-family: 'Times New Roman', Times, serif;
-            background: white;
-            overflow-y: auto;
-            /* Scroll inside the box, not the page */
-        }
-
-        /* Character Highlighting */
-        span.correct {
-            color: green;
-        }
-
-        span.incorrect {
-            background-color: var(--error-color);
-            color: white;
-        }
-
-        /* Bottom Controls - Fixed at bottom */
-        .controls {
+        .instructions {
             background: #fff;
+            padding: 10px;
+            border: 1px solid #ddd;
+            font-size: 12px;
+            color: #444;
+        }
+
+        .instructions h4 {
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #e0f0f5;
+            padding: 10px 20px;
             border-top: 1px solid #ccc;
-            padding: 15px 20px;
             display: flex;
             justify-content: flex-end;
-            /* Align buttons to right */
-            gap: 10px;
-            flex-shrink: 0;
-            /* Prevent controls from shrinking */
-            z-index: 10;
         }
 
-        button {
-            padding: 10px 25px;
+        .btn-submit {
+            background-color: #0275d8;
+            color: white;
             border: none;
-            border-radius: 4px;
-            cursor: pointer;
+            padding: 8px 25px;
             font-weight: bold;
-            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
         }
 
-        .btn-start {
-            background-color: #5cb85c;
-            color: white;
-        }
-
-        .btn-reset {
-            background-color: #d9534f;
-            color: white;
-        }
-
-        button:hover {
+        .btn-submit:hover {
             opacity: 0.9;
         }
 
@@ -167,23 +266,21 @@
         .modal {
             display: none;
             position: fixed;
-            z-index: 100;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
-            justify-content: center;
             align-items: center;
+            justify-content: center;
+            z-index: 1000;
         }
 
         .modal-content {
             background: white;
             padding: 30px;
             border-radius: 8px;
-            text-align: center;
-            min-width: 300px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            width: 500px;
         }
     </style>
 </head>
@@ -191,327 +288,454 @@
 <body>
 
     <header>
-        <div class="exam-info">Typing Test</div>
-        <div class="stats-bar">
-            <div class="stat-box">Time Left: <span id="timer">15:00</span></div>
-            <div class="stat-box">WPM: <span id="wpm">0</span></div>
-            <div class="stat-box">Accuracy: <span id="accuracy">100%</span></div>
+        <div class="header-title">Assessment Examination Center</div>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchMode('exam')" id="btn-exam">Exam Mode</button>
+            <button class="tab-btn" onclick="switchMode('practice')" id="btn-practice">Practice Mode</button>
+        </div>
+        <div style="display:flex; align-items:center; gap: 15px;">
+            <button id="btn-start-test" onclick="startTest()"
+                style="background: #5cb85c; color: white; border: none; padding: 5px 15px; border-radius: 3px; cursor: pointer; font-weight: bold;">Start
+                Test</button>
+            <div style="font-size: 14px;">Time Left: <span id="timer">15:00</span></div>
         </div>
     </header>
 
-    <div class="container">
-        <div class="panel-wrapper">
-            <div class="box-label">Original Text (Full Passage)</div>
-            <div class="text-panel" id="quoteDisplay"></div>
+    <div class="main-container">
+        <!-- Left Pane -->
+        <div class="left-pane">
+            <div class="info-bar">
+                <div>
+                    <span
+                        style="background: #0275d8; color: white; padding: 3px 8px; font-size: 12px; border-radius: 3px;">Section
+                        A</span>
+                </div>
+                <div>Server Time: <span id="server-time">--:--</span></div>
+            </div>
+
+            <div class="blue-header">Keyboard Layout: QWERTY</div>
+
+            <div class="typing-area">
+                <div class="text-box" id="quoteDisplay"></div>
+                <!-- Added disabled attribute initially -->
+                <textarea class="input-box" id="quoteInput" placeholder="Click 'Start Test' to begin..."
+                    spellcheck="false" disabled></textarea>
+            </div>
         </div>
 
-        <div class="panel-wrapper">
-            <div class="box-label">Type Here</div>
-            <textarea class="input-panel" id="quoteInput" placeholder="Click 'Start Test' to begin typing..."
-                disabled></textarea>
+        <!-- Right Pane -->
+        <div class="right-pane">
+            <div class="profile-section">
+                <div class="profile-img">👤</div>
+                <div><strong>Candidate Name</strong><br>User</div>
+            </div>
+
+            <table class="stats-table">
+                <tr>
+                    <td>Keystrokes Count</td>
+                    <td id="stat-keystrokes">0</td>
+                </tr>
+                <tr>
+                    <td>Backspace Count</td>
+                    <td id="stat-backspace">0</td>
+                </tr>
+                <tr>
+                    <td>Total Word Count</td>
+                    <td id="stat-total-words">0</td>
+                </tr>
+                <tr>
+                    <td>Typed Word Count</td>
+                    <td id="stat-typed-words">0</td>
+                </tr>
+                <tr>
+                    <td>Pending Word Count</td>
+                    <td id="stat-pending-words">0</td>
+                </tr>
+                <tr>
+                    <td>Error Count</td>
+                    <td id="stat-errors" class="sensitive-stat">0</td>
+                </tr>
+                <tr>
+                    <td>Gross WPM</td>
+                    <td id="stat-gwpm" class="sensitive-stat">0</td>
+                </tr>
+                <tr>
+                    <td>Net WPM</td>
+                    <td id="stat-nwpm" class="sensitive-stat">0</td>
+                </tr>
+                <tr>
+                    <td>Accuracy</td>
+                    <td id="stat-accuracy" class="sensitive-stat">0%</td>
+                </tr>
+            </table>
+
+            <div class="instructions">
+                <h4>Instructions</h4>
+                <ul style="padding-left: 20px; margin: 0;">
+                    <li id="instr-1">Highlighting will guide you to current word.</li>
+                    <li>Green/Red indicates Correct/Wrong words.</li>
+                    <li>Avoid using backspace to maximize score.</li>
+                    <li>Submit manually or auto-submit on timeout.</li>
+                </ul>
+            </div>
         </div>
     </div>
 
-    <div class="controls">
-        <label style="margin-right: 15px; display: flex; align-items: center; gap: 5px;">
-            <input type="checkbox" id="examModeToggle"> Exam Mode (No Colors)
-        </label>
-        <button class="btn-start" onclick="startTest()">Start Test</button>
-        <button class="btn-reset" onclick="resetTest()">Reset Test</button>
-    </div>
+    <footer>
+        <button class="btn-submit" onclick="finishTest()">Submit</button>
+    </footer>
 
+    <!-- Result Modal -->
     <div id="resultModal" class="modal">
         <div class="modal-content">
-            <h2>Test Finished!</h2>
-            <div
-                style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: left; margin-bottom: 20px;">
-                <div>Full Mistakes: <strong id="finalFullMistakes" style="color: red;">0</strong></div>
-                <div>Half Mistakes: <strong id="finalHalfMistakes" style="color: orange;">0</strong></div>
-                <div>Total Errors: <strong id="finalErrors">0</strong></div>
-                <div>Key Depressions: <strong id="finalKeystrokes">0</strong></div>
+            <h2 style="margin-top:0;">Test Summary</h2>
+            <div id="resultBody"></div>
+            <div style="margin-top: 20px; text-align: right;">
+                <button class="btn-submit" style="background:#d9534f;" onclick="resetTest()">Close & Reset</button>
             </div>
-            <p>Net WPM: <strong id="finalWpm" style="font-size: 24px; color: #0275d8;">0</strong></p>
-            <p>Accuracy: <strong id="finalAcc">0%</strong></p>
-            <br>
-            <button class="btn-reset" onclick="closeModal()">Close</button>
         </div>
     </div>
 
     <script>
+        // Sample Passage
         const passages = [
-            "The digital age has revolutionized the way we communicate and access information. With the advent of smartphones and high-speed internet, knowledge is just a click away. However, this convenience comes with challenges such as data privacy and cyber security threats. It is imperative for users to remain vigilant and adopt best practices to safeguard their personal information.",
-            "Climate change is one of the most pressing issues facing humanity today. Rising global temperatures are leading to melting ice caps, rising sea levels, and more frequent extreme weather events. Governments and individuals alike must take urgent action to reduce carbon footprints and transition to renewable energy sources to ensure a sustainable future for generations to come.",
-            "Education is the cornerstone of a progressive society. It empowers individuals with the skills and knowledge necessary to contribute meaningfully to the economy. Furthermore, education fosters critical thinking and tolerance, which are essential for maintaining social harmony. Investment in education is, therefore, an investment in the nation's future.",
-            "The Indus Valley Civilization was a Bronze Age civilization in the northwestern regions of South Asia, lasting from 3300 BCE to 1300 BCE, and in its mature form from 2600 BCE to 1900 BCE. Together with ancient Egypt and Mesopotamia, it was one of three early civilizations of the near east and South Asia, and of the three, the most widespread, its sites spanning an area stretching from northeast Afghanistan, through much of Pakistan, and into western and northwestern India.",
-            "The Constitution of India is the supreme law of India. The document lays down the framework demarcating fundamental political code, structure, procedures, powers, and duties of government institutions and sets out fundamental rights, directive principles, and the duties of citizens. It is the longest written constitution of any country on earth. B. R. Ambedkar, chairman of the drafting committee, is widely considered to be its chief architect.",
-            "Artificial intelligence (AI) is intelligence demonstrated by machines, as opposed to the natural intelligence displayed by animals including humans. AI research has been defined as the field of study of intelligent agents, which refers to any system that perceives its environment and takes actions that maximize its chance of achieving its goals. The term 'artificial intelligence' had previously been used to describe machines that mimic and display 'human' cognitive skills that are associated with the human mind, such as 'learning' and 'problem-solving'.",
-            "Biodiversity refers to the variety and variability of life on Earth. Biodiversity is typically a measure of variation at the genetic, species, and ecosystem level. Terrestrial biodiversity is usually greater near the equator, which is the result of the warm climate and high primary productivity. Biodiversity is not distributed evenly on Earth, and is richer in the tropics. These tropical forest ecosystems cover less than 10 percent of earth's surface, and contain about 90 percent of the world's species.",
-            "The Reserve Bank of India (RBI) is India's central bank and regulatory body responsible for regulation of the Indian banking system. It is under the ownership of the Ministry of Finance, Government of India. It is responsible for the control, issue and maintaining supply of the Indian rupee. It also manages the country's main payment systems and works to promote its economic development.",
-            "Yoga is a group of physical, mental, and spiritual practices or disciplines which originated in ancient India. Yoga is one of the six Astika (orthodox) schools of Hindu philosophical traditions. There is a broad variety of yoga schools, practices, and goals in Hinduism, Buddhism, and Jainism. The term 'Yoga' in the Western world often denotes a modern form of Hatha yoga and yoga as exercise, consisting largely of the postures or asanas.",
-            "The Indian Space Research Organisation (ISRO) is the national space agency of India, headquartered in Bengaluru. It operates under the Department of Space (DOS) which is directly overseen by the Prime Minister of India, while Chairman of ISRO acts as executive of DOS as well. ISRO is the primary agency in India to perform tasks related to space based applications, space exploration and development of related technologies.",
-            "Sustainable development is the organizing principle for meeting human development goals while simultaneously sustaining the ability of natural systems to provide the natural resources and ecosystem services on which the economy and society depend. The desired result is a state of society where living conditions and resources are used to continue to meet human needs without undermining the integrity and stability of the natural system.",
-            "The Olympics are leading international sporting events featuring summer and winter sports competitions in which thousands of athletes from around the world participate in a variety of competitions. The Olympic Games are considered the world's foremost sports competition with more than 200 nations participating. The Olympic Games are held every four years, with the Summer and Winter Games alternating by occurring every four years but two years apart.",
-            "Agriculture is the practice of cultivating plants and livestock. Agriculture was the key development in the rise of sedentary human civilization, whereby farming of domesticated species created food surpluses that enabled people to live in cities. The history of agriculture began thousands of years ago. After gathering wild grains beginning at least 105,000 years ago, nascent farmers began to plant them around 11,500 years ago."
+            "India is grappling with some of the fundamental challenges that should be taken up on a priority basis. The basic indicators of growth are not at par with the aspirations of the common people and a genuine willingness to set things straight is still missing. The national issues that continue to hold India back from achieving its development goals have not changed much over the years.",
+            "The quick brown fox jumps over the lazy dog. This is a classic pangram used to test typewriters and computer keyboards. It contains every letter of the alphabet. Typing accuracy is crucial for professional work.",
+            "Technology has transformed the way we live and work. From smartphones to artificial intelligence, innovation drives progress. However, we must also consider the ethical implications of these advancements."
         ];
 
-        const quoteDisplayElement = document.getElementById('quoteDisplay');
-        const quoteInputElement = document.getElementById('quoteInput');
-        const timerElement = document.getElementById('timer');
-        const wpmElement = document.getElementById('wpm');
-        const accElement = document.getElementById('accuracy');
-        const modal = document.getElementById('resultModal');
-        const examModeToggle = document.getElementById('examModeToggle');
+        // State Elements
+        const quoteDisplay = document.getElementById('quoteDisplay');
+        const quoteInput = document.getElementById('quoteInput');
+        const btnStart = document.getElementById('btn-start-test');
 
+        // Stats Elements
+        const elKeystrokes = document.getElementById('stat-keystrokes');
+        const elBackspace = document.getElementById('stat-backspace');
+        const elTotalWords = document.getElementById('stat-total-words');
+        const elTypedWords = document.getElementById('stat-typed-words');
+        const elPendingWords = document.getElementById('stat-pending-words');
+        const elErrors = document.getElementById('stat-errors');
+        const elGwpm = document.getElementById('stat-gwpm');
+        const elNwpm = document.getElementById('stat-nwpm');
+        const elAccuracy = document.getElementById('stat-accuracy');
+        const elTimer = document.getElementById('timer');
+        const modal = document.getElementById('resultModal');
+
+        let mode = 'exam'; // 'exam' or 'practice'
         let timerInterval;
-        let timeLimit = 15 * 60;
+        let timeLimit = 15 * 60; // 15 mins
         let timeLeft = timeLimit;
         let isRunning = false;
 
-        // Stats
-        let keyDepressions = 0;
-        let fullMistakes = 0;
-        let halfMistakes = 0;
-        let totalErrors = 0;
+        // Data Tracking
+        let originalText = "";
+        let originalWords = [];
+        let backspaceCount = 0;
+        let startTime = null;
 
-        function init() {
-            const text = passages[Math.floor(Math.random() * passages.length)];
-            quoteDisplayElement.innerHTML = '';
-            text.split('').forEach(character => {
-                const characterSpan = document.createElement('span');
-                characterSpan.innerText = character;
-                quoteDisplayElement.appendChild(characterSpan);
-            });
-            quoteInputElement.value = null;
-            quoteInputElement.disabled = true;
-            resetStats();
+        // Server Time Clock
+        function updateServerTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('server-time').innerText = timeString;
+        }
+        setInterval(updateServerTime, 1000);
+        updateServerTime();
+
+        function switchMode(newMode) {
+            mode = newMode;
+            document.getElementById('btn-exam').classList.toggle('active', mode === 'exam');
+            document.getElementById('btn-practice').classList.toggle('active', mode === 'practice');
+
+            // Text for instructions
+            const instrContainer = document.querySelector('.instructions ul');
+            if (mode === 'exam') {
+                instrContainer.innerHTML = `
+                    <li>Kindly type the highlighted word to proceed further.</li>
+                    <li>Kindly note, you can edit the text contents that you have typed.</li>
+                    <li>Correct/Wrong words turn Green/Red respectively.</li>
+                    <li>Kindly note, it is mandatory for you to type the entire text contents to submit.</li>
+                    <li>Upon timeout, the system will automatically save all your responses.</li>
+                    <li><strong>Note: Performance stats are hidden until submission.</strong></li>
+                `;
+            } else {
+                instrContainer.innerHTML = `
+                    <li>Practice Mode: Immediate character-level feedback.</li>
+                    <li>Green background indicates correct characters.</li>
+                    <li>Red background indicates incorrect characters.</li>
+                    <li>Real-time accuracy and WPM tracking.</li>
+                `;
+            }
+
+            resetTest();
         }
 
-        function resetStats() {
-            keyDepressions = 0;
-            fullMistakes = 0;
-            halfMistakes = 0;
-            totalErrors = 0;
-            wpmElement.innerText = "0";
-            accElement.innerText = "100%";
+        function init() {
+            // Pick random passage
+            originalText = passages[Math.floor(Math.random() * passages.length)];
+            originalWords = originalText.split(/\s+/);
+
+            renderText();
+            quoteInput.value = '';
+
+            // Disable input until Start is clicked
+            quoteInput.disabled = true;
+            quoteInput.placeholder = "Click 'Start Test' to begin...";
+            btnStart.style.display = 'block'; // Show Start Button
+            btnStart.disabled = false;
+
+            // Reset Stats
+            backspaceCount = 0;
+            timeLeft = timeLimit;
+            elTimer.innerText = "15:00";
+
+            // Clear stats UI
+            updateStatsUI(0, 0, 0, 0, 0, 0, 0, 0);
         }
 
         function startTest() {
             if (isRunning) return;
             isRunning = true;
-            quoteInputElement.disabled = false;
-            quoteInputElement.focus();
-            timerInterval = setInterval(updateTimer, 1000);
+            quoteInput.disabled = false;
+            quoteInput.value = "";
+            quoteInput.focus();
+            quoteInput.placeholder = "Type here...";
 
-            // Check mode immediately
-            updateDisplayMode();
-        }
+            btnStart.style.display = 'none'; // Hide Start Button
 
-        function updateTimer() {
-            if (timeLeft > 0) {
-                timeLeft--;
-                const minutes = Math.floor(timeLeft / 60);
-                const seconds = timeLeft % 60;
-                timerElement.innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-                calculateStats(false);
-            } else {
-                finishTest();
-            }
-        }
-
-        // Toggle Exam Mode Visuals
-        examModeToggle.addEventListener('change', updateDisplayMode);
-
-        function updateDisplayMode() {
-            const spans = quoteDisplayElement.querySelectorAll('span');
-            spans.forEach(span => {
-                if (examModeToggle.checked) {
-                    // Clear colors in Exam Mode
-                    span.style.color = 'black';
-                    span.style.backgroundColor = 'transparent';
+            startTime = new Date();
+            timerInterval = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+                    const s = (timeLeft % 60).toString().padStart(2, '0');
+                    elTimer.innerText = `${m}:${s}`;
+                    executeStatsLogic(); // Update time-dependent stats
                 } else {
-                    // Restore classes logic is handled in 'input' event, 
-                    // but we might need to re-apply if user toggles mid-test.
-                    // For simplicity, we just clear styles. The next input event will recolor.
-                    span.removeAttribute('style');
+                    finishTest();
                 }
-            });
-
-            // Trigger input event logic to re-color if switching BACK to practice mode
-            if (!examModeToggle.checked && isRunning) {
-                quoteInputElement.dispatchEvent(new Event('input'));
-            }
+            }, 1000);
         }
 
-        quoteInputElement.addEventListener('input', (e) => {
-            if (!isRunning) startTest();
+        function renderText() {
+            quoteDisplay.innerHTML = '';
 
-            // Track key depressions (approximate: length of value)
-            keyDepressions = quoteInputElement.value.length;
-
-            const arrayQuote = quoteDisplayElement.querySelectorAll('span');
-            const arrayValue = quoteInputElement.value.split('');
-
-            let currentErrors = 0;
-            // Recalculate errors based on current input vs original text
-            // strictly up to the length of what is typed.
-            arrayValue.forEach((char, index) => {
-                if (index < arrayQuote.length) {
-                    if (char !== arrayQuote[index].innerText) {
-                        currentErrors++;
-                    }
-                } else {
-                    // Extra characters are mistakes
-                    currentErrors++;
-                }
-            });
-            errors = currentErrors;
-
-            // Visual Feedback Logic
-            if (!examModeToggle.checked) {
-                arrayQuote.forEach((characterSpan, index) => {
-                    const character = arrayValue[index];
-                    // Reset inline styles first
-                    characterSpan.removeAttribute('style');
-
-                    if (character == null) {
-                        characterSpan.classList.remove('correct');
-                        characterSpan.classList.remove('incorrect');
-                    } else if (character === characterSpan.innerText) {
-                        characterSpan.classList.add('correct');
-                        characterSpan.classList.remove('incorrect');
-                    } else {
-                        characterSpan.classList.remove('correct');
-                        characterSpan.classList.add('incorrect');
-                    }
+            if (mode === 'exam') {
+                // Word-based rendering
+                originalWords.forEach((word, index) => {
+                    const span = document.createElement('span');
+                    span.innerText = word + " "; // Add space visual
+                    span.id = `word-${index}`;
+                    span.className = 'word-pending';
+                    quoteDisplay.appendChild(span);
                 });
+                // Highlight first word
+                if (originalWords.length > 0) {
+                    document.getElementById('word-0').className = 'word-current';
+                }
             } else {
-                // Ensure plain look in exam mode
-                arrayQuote.forEach(span => {
-                    span.classList.remove('correct');
-                    span.classList.remove('incorrect');
+                // Character-based rendering (Practice Mode)
+                originalText.split('').forEach((char, index) => {
+                    const span = document.createElement('span');
+                    span.innerText = char;
+                    span.id = `char-${index}`;
+                    quoteDisplay.appendChild(span);
                 });
             }
 
-            calculateStats(false);
+            elTotalWords.innerText = originalWords.length;
+            elPendingWords.innerText = originalWords.length;
+        }
+
+        quoteInput.addEventListener('keydown', (e) => {
+            if (!isRunning) return; // Should be disabled anyway
+            if (e.key === 'Backspace') {
+                backspaceCount++;
+                elBackspace.innerText = backspaceCount;
+            }
         });
 
-        // Block Paste
-        quoteInputElement.addEventListener('paste', e => e.preventDefault());
+        quoteInput.addEventListener('input', () => {
+            if (!isRunning) return;
 
-        function calculateStats(isFinal) {
-            const timeElapsed = timeLimit - timeLeft;
-            const timeElapsedMin = timeElapsed / 60;
+            if (mode === 'exam') {
+                handleExamInput();
+            } else {
+                handlePracticeInput();
+            }
+            executeStatsLogic();
+        });
 
-            // Standard Gross WPM
-            let grossWPM = 0;
-            if (timeElapsedMin > 0) {
-                grossWPM = Math.round((keyDepressions / 5) / timeElapsedMin);
+        // --- EXAM MODE LOGIC (Word Based) ---
+        function handleExamInput() {
+            const currentInput = quoteInput.value;
+            let inputWords = currentInput.split(/\s+/);
+
+            if (currentInput.endsWith(' ')) {
+                // We are technically on the word ALREADY, but it's empty.
+            } else if (currentInput.length === 0) {
+                inputWords = [""];
             }
 
-            // Real-time Accuracy: (Current Length - Current Errors) / Current Length
-            let accuracy = 100;
-            let currentLen = quoteInputElement.value.length;
-            if (currentLen > 0) {
-                accuracy = Math.round(((currentLen - errors) / currentLen) * 100);
-            }
-            if (accuracy < 0) accuracy = 0;
+            originalWords.forEach((orig, idx) => {
+                const el = document.getElementById(`word-${idx}`);
+                if (!el) return;
 
-            wpmElement.innerText = grossWPM;
-            accElement.innerText = accuracy + "%";
+                const typed = inputWords[idx];
+
+                // Reset
+                el.className = '';
+
+                if (typed === undefined) {
+                    // Not reached yet
+                    el.className = 'word-pending';
+                } else {
+                    if (idx === inputWords.length - 1) {
+                        el.className = 'word-current';
+                        if (!orig.startsWith(typed)) {
+                            el.style.backgroundColor = 'red';
+                            el.style.color = 'white';
+                        } else {
+                            el.style.backgroundColor = 'var(--highlight-yellow)';
+                            el.style.color = 'black';
+                        }
+                    } else {
+                        // Past word (completed)
+                        if (typed === orig) {
+                            el.className = 'word-correct';
+                            el.style.backgroundColor = 'transparent';
+                        } else {
+                            el.className = 'word-wrong';
+                            el.style.backgroundColor = 'transparent';
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- PRACTICE MODE LOGIC (Char Based) ---
+        function handlePracticeInput() {
+            const val = quoteInput.value;
+            const arr = val.split('');
+            const spans = quoteDisplay.querySelectorAll('span');
+
+            spans.forEach((span, i) => {
+                const char = arr[i];
+                if (char == null) {
+                    span.className = ''; // Reset
+                    if (i === arr.length) span.className = 'char-current';
+                } else if (char === span.innerText) {
+                    span.className = 'char-correct';
+                } else {
+                    span.className = 'char-wrong';
+                }
+            });
+        }
+
+        // --- SCORING & STATS ---
+        function executeStatsLogic() {
+            const text = quoteInput.value;
+            const keystrokes = text.length;
+
+            const typedWordsList = text.trim().split(/\s+/);
+            const typedWordsCount = text.trim() === '' ? 0 : typedWordsList.length;
+
+            let errorCount = 0;
+
+            if (mode === 'exam') {
+                const inputList = text.split(/\s+/);
+                inputList.forEach((w, i) => {
+                    if (i < inputList.length - 1) {
+                        if (originalWords[i] && w !== originalWords[i]) {
+                            errorCount += w.length;
+                        }
+                    }
+                });
+            } else {
+                for (let i = 0; i < text.length; i++) {
+                    if (i < originalText.length && text[i] !== originalText[i]) {
+                        errorCount++;
+                    }
+                }
+            }
+
+            const timeElapsedMin = (timeLimit - timeLeft) / 60;
+            const validTime = timeElapsedMin === 0 ? 0.001 : timeElapsedMin;
+
+            const gwpm = Math.round((keystrokes / 5) / validTime);
+
+            const grossWords = keystrokes / 5;
+            const penalty = errorCount / 5;
+            const netWords = Math.max(0, grossWords - penalty);
+            const nwpm = Math.round(netWords / validTime);
+
+            const acc = gwpm > 0 ? Math.round((nwpm * 100) / gwpm) : 100;
+
+            const pending = Math.max(0, originalWords.length - typedWordsCount);
+
+            updateStatsUI(keystrokes, backspaceCount, originalWords.length, typedWordsCount, pending, errorCount, gwpm, nwpm, acc);
+        }
+
+        function updateStatsUI(k, b, tot, typ, pen, err, g, n, a) {
+            // Always update basic counters
+            elKeystrokes.innerText = k;
+            elBackspace.innerText = b;
+            elTotalWords.innerText = tot;
+            elTypedWords.innerText = typ;
+            elPendingWords.innerText = pen;
+
+            // Conditional update for performance stats
+            if (mode === 'exam' && isRunning) {
+                // HIDE live stats in Exam Mode
+                elErrors.innerText = "--";
+                elGwpm.innerText = "--";
+                elNwpm.innerText = "--";
+                elAccuracy.innerText = "--";
+            } else {
+                // SHOW live stats in Practice Mode OR if stopped (Result)
+                elErrors.innerText = err;
+                elGwpm.innerText = g;
+                elNwpm.innerText = n;
+                elAccuracy.innerText = a + "%";
+            }
         }
 
         function finishTest() {
             clearInterval(timerInterval);
             isRunning = false;
-            quoteInputElement.disabled = true;
+            quoteInput.disabled = true;
 
-            // --- FINAL EVALUATION (Better SSC approximation) ---
-            const originalText = quoteDisplayElement.innerText;
-            const typedText = quoteInputElement.value;
+            // Force final update to reveal stats in Exam Mode
+            // Re-run stats logic with isRunning = false to populate UI
+            executeStatsLogic();
 
-            const origWords = originalText.trim().split(/\s+/);
-            const typedWords = typedText.trim().split(/\s+/);
-
-            fullMistakes = 0;
-            halfMistakes = 0;
-
-            // Simple Word-wise comparison (This is a simplified SSC model)
-            // Real SSC evaluation is complex (shifting windows). 
-            // We'll use a positional comparison for now.
-
-            let minLen = Math.min(origWords.length, typedWords.length);
-
-            for (let i = 0; i < minLen; i++) {
-                if (origWords[i] === typedWords[i]) {
-                    // Correct
-                } else if (origWords[i].toLowerCase() === typedWords[i].toLowerCase()) {
-                    // Capitalization error -> Half Mistake
-                    halfMistakes++;
-                } else {
-                    // Wrong word / Spelling -> Full Mistake
-                    fullMistakes++;
-                }
-            }
-
-            // Omitted words or Extra words at the end
-            const lengthDiff = Math.abs(origWords.length - typedWords.length);
-            fullMistakes += lengthDiff;
-
-            totalErrors = fullMistakes + (halfMistakes / 2);
-
-            // Calculation
-            const timeElapsedMin = (timeLimit - timeLeft) / 60;
-            const grossWPM = Math.round((keyDepressions / 5) / timeElapsedMin) || 0;
-
-            // Net WPM = Gross WPM - (Errors / Time) ?? 
-            // SSC often uses: (Total Key Depressions - (FullMistakes * X + HalfMistakes * Y)) / Total Time ...
-            // Let's stick to a standard: Net WPM = Gross WPM - (Errors / TimeMinutes)
-            let netWPM = Math.round(grossWPM - (totalErrors / timeElapsedMin));
-            if (netWPM < 0) netWPM = 0;
-
-            const accuracy = Math.max(0, 100 - ((totalErrors / origWords.length) * 100)).toFixed(2);
-
-            document.getElementById('finalFullMistakes').innerText = fullMistakes;
-            document.getElementById('finalHalfMistakes').innerText = halfMistakes;
-            document.getElementById('finalErrors').innerText = totalErrors;
-            document.getElementById('finalKeystrokes').innerText = keyDepressions;
-            document.getElementById('finalWpm').innerText = netWPM;
-            document.getElementById('finalAcc').innerText = accuracy + "%";
-
+            // Show Modal with Final Values
+            const body = document.getElementById('resultBody');
+            body.innerHTML = `
+                <p><strong>Net WPM:</strong> <span style="font-size: 20px; color: blue;">${elNwpm.innerText}</span></p>
+                <p><strong>Accuracy:</strong> ${elAccuracy.innerText}</p>
+                <p><strong>Gross WPM:</strong> ${elGwpm.innerText}</p>
+                <p><strong>Errors (Chars):</strong> ${elErrors.innerText}</p>
+                <p><strong>Keystrokes:</strong> ${elKeystrokes.innerText}</p>
+            `;
             modal.style.display = 'flex';
         }
 
         function resetTest() {
+            modal.style.display = 'none';
             clearInterval(timerInterval);
-            timeLeft = timeLimit;
             isRunning = false;
-            timerElement.innerText = "15:00";
-            wpmElement.innerText = "0";
-            accElement.innerText = "100%";
-            errors = 0;
             init();
-            modal.style.display = 'none';
         }
 
-        function closeModal() {
-            modal.style.display = 'none';
-            resetTest();
-        }
+        // Start on load
+        window.onload = init;
 
-        init();
+        // Disable paste
+        quoteInput.onpaste = e => e.preventDefault();
 
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                    }, err => {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
-        }
     </script>
-
 </body>
 
 </html>
