@@ -581,7 +581,20 @@
 
         quoteInput.addEventListener('keydown', (e) => {
             if (!isRunning) return; // Should be disabled anyway
+
             if (e.key === 'Backspace') {
+                if (mode === 'exam') {
+                    // Prevent deleting past words (if char before cursor is space)
+                    const cursor = quoteInput.selectionStart;
+                    if (cursor > 0) {
+                        const charToDelete = quoteInput.value[cursor - 1];
+                        if (charToDelete === ' ') {
+                            e.preventDefault();
+                            return;
+                        }
+                    }
+                }
+
                 backspaceCount++;
                 elBackspace.innerText = backspaceCount;
             }
