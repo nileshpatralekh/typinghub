@@ -620,8 +620,8 @@
                     // Not reached yet
                     el.className = 'word-pending';
                 } else {
-                    if (idx === inputWords.length - 1 && !currentInput.endsWith(' ')) {
-                        // Current word being typed
+                    if (idx === inputWords.length - 1) {
+                        // Current word being typed (or just started empty)
                         el.className = 'word-current';
                         // Keep text BLACK and background YELLOW regardless of correctness
                         // Error is only registered/shown after submission (space)
